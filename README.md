@@ -10,7 +10,7 @@ This application is a sign-in form for the SJC Computer Science Club. It is buil
   - Whether the user is a CS Major
   - Whether the user needs help with Zybooks
 - Validates the input data
-- Writes the collected data to a file named `form.txt`
+- Writes the collected data to a file named `form.json`
 
 ## Requirements
 
