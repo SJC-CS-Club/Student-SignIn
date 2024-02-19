@@ -2,3 +2,6 @@
 .vscode/*
 
 /output/
+
+*.json
+*.txt

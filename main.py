@@ -1,4 +1,5 @@
 import sys
+import json
 from datetime import datetime
 
 from PyQt5.QtWidgets import *
@@ -44,6 +45,8 @@ class MainWindow(QMainWindow):
         name_label = QLabel("Full Name:")
         self.full_name_input.setPlaceholderText("e.g. John Doe")
         self.full_name_input.setValidator(QRegExpValidator(QRegExp("[a-zA-Z\s]+")))
+
+        self.full_name_input.returnPressed.connect(self.student_id_input.setFocus)
 
         name_layout = QHBoxLayout()
         name_layout.addStretch()
@@ -94,10 +97,38 @@ class MainWindow(QMainWindow):
         cs_major = self.is_cs_major_checkbox.isChecked()
         help_needed = self.needs_help_checkbox.isChecked()
 
-        date = self.time.date()
+        time_date = self.time.date()
+        date = f"{time_date.month}-{time_date.day}-{time_date.year}"
 
-        with open('form.txt', 'a') as f:
-            f.write(f"Name: {name}, G#: {uid}, CS Major: {cs_major}, SI Session: {help_needed}, Date: {date.month}-{date.day}-{date.year}\n")
+        with open('form.json', 'r') as f:
+            if f.read() == "":
+                data = {}
+            else:
+                f.seek(0)
+                data = json.load(f)
+
+        if uid in data.keys():
+            if help_needed:
+                data[uid]["help_needed"].append(date)
+            data[uid]["date"].append(date)
+        else:
+            data[uid] = {
+                "name": name,
+                "cs_major": cs_major,
+                "help_needed": [date] if help_needed else [],
+                "date": [date]
+            }
+
+        with open('form.json', 'w') as f:
+            json.dump(data, f, indent=4)
+
+        self.reset_form()
+
+    def reset_form(self):
+        self.full_name_input.clear()
+        self.student_id_input.clear()
+        self.is_cs_major_checkbox.setChecked(False)
+        self.needs_help_checkbox.setChecked(False)
 
 
 if __name__ == '__main__':
