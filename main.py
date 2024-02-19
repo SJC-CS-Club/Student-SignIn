@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 from datetime import datetime
 
@@ -99,6 +100,9 @@ class MainWindow(QMainWindow):
 
         time_date = self.time.date()
         date = f"{time_date.month}-{time_date.day}-{time_date.year}"
+
+        if not os.path.exists('form.json'):
+            open('form.json', 'w').close()
 
         with open('form.json', 'r') as f:
             if f.read() == "":
